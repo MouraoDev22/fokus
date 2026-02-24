@@ -12,6 +12,7 @@ const musicaFocoInput = document.querySelector('#alternar-musica');
 
 const startPauseBtn = document.querySelector('#start-pause');
 const startPauseBtnSpan = document.querySelector('#start-pause span');
+const startPauseBtnImg = document.querySelector('#start-pause img');
 
 const temporizador = document.querySelector('#timer');
 
@@ -24,26 +25,27 @@ const beep = new Audio('/sons/beep.mp3');
 
 let idTemporizador = null;
 
+let tempoEscolhido = null;
 let focoTempo = 1500;
 let curtoTempo = 300;
 let longoTempo = 900;
 
 focoBtn.addEventListener('click', () => {
-    alterarContexto('foco');
+    alterarContexto('foco', focoTempo);
     
     focoBtn.classList.add('active');
     return;
 });
 
 curtoBtn.addEventListener('click', () => {
-    alterarContexto('descanso-curto');
+    alterarContexto('descanso-curto', curtoTempo);
     
     curtoBtn.classList.add('active');
     return;
 });
 
 longoBtn.addEventListener('click', () => {
-    alterarContexto('descanso-longo');
+    alterarContexto('descanso-longo', longoTempo);
     
     longoBtn.classList.add('active');
     return;
@@ -51,42 +53,27 @@ longoBtn.addEventListener('click', () => {
 
 musicaFocoInput.addEventListener('change', () => {
     if (musica.paused) {
-        musica.play();
+        return musica.play();
     } else {
-        musica.pause();
+        return musica.pause();
     };
-    return;
 });
 
 startPauseBtn.addEventListener('click', () => {
     if (idTemporizador) {
-        pause.play();
-        startPauseBtnSpan.textContent = 'Começar';
-        clearInterval(idTemporizador);
-        idTemporizador = null;
-        return;
+        return pausar();
     };
     
-    play.play();
-    startPauseBtnSpan.textContent = 'Pausar';
-
-    idTemporizador = setInterval(() => {
-        curtoTempo -= 1;
-        console.log(curtoTempo);
-        
-        if (curtoTempo === 250) {
-            beep.play();
-            startPauseBtnSpan.textContent = 'Começar';
-            curtoTempo = 300;
-            clearInterval(idTemporizador);
-            idTemporizador = null;
-            return;
-        };
-    }, 1000);
-    return;
+    return iniciar();
 });
 
-function alterarContexto(contexto) {
+tempoEscolhido = focoTempo;
+atualizarTemporizador(tempoEscolhido);
+
+function alterarContexto(contexto, tipoTempo) {
+    atualizarTemporizador(tipoTempo);
+    tempoEscolhido = tipoTempo;
+    
     for (const botao of botoes) {
         botao.classList.remove('active');
     };
@@ -122,5 +109,52 @@ function alterarContexto(contexto) {
         default:
             break;
     };
+    return;
+};
+
+function iniciar() {
+    play.play();
+    startPauseBtnSpan.textContent = 'Pausar';
+    startPauseBtnImg.setAttribute('src', '/imagens/pause.png');
+
+    idTemporizador = setInterval(() => {
+        tempoEscolhido -= 1;
+        atualizarTemporizador(tempoEscolhido);
+        
+        if (tempoEscolhido === 0) {
+            zerar();
+            return;
+        };
+    }, 1000);
+    return;
+};
+
+function pausar() {
+    pause.play();
+        
+    startPauseBtnSpan.textContent = 'Começar';
+    startPauseBtnImg.setAttribute('src', '/imagens/play_arrow.png');
+        
+    clearInterval(idTemporizador);
+    idTemporizador = null;
+    return;
+};
+
+function zerar() {
+    beep.play();
+            
+    startPauseBtnSpan.textContent = 'Começar';
+    startPauseBtnImg.setAttribute('src', '/imagens/play_arrow.png');
+            
+    tempoEscolhido = null;
+    clearInterval(idTemporizador);
+    idTemporizador = null;
+    return;
+};
+
+function atualizarTemporizador(tipoTempo) {
+    const tempo = new Date(tipoTempo * 1000);
+    const tempoFormatado = tempo.toLocaleTimeString('pt-BR', {minute: '2-digit', second: '2-digit'});
+    temporizador.innerHTML = `${tempoFormatado}`;
     return;
 };
