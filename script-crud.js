@@ -49,11 +49,13 @@ function criarElementoTarefa(tarefa) {
     li.querySelector('.app_button-edit').addEventListener('click', () => {
         const novaDescricao = prompt('Digite a nova descrição da tarefa:');
         
-        if (novaDescricao) {
-            tarefa.descricao = novaDescricao;
-            li.querySelector('.app__section-task-list-item-description').textContent = novaDescricao;
-            salvarTarefas();
+        if (!novaDescricao || novaDescricao.trim() === '') {
+            return;
         };
+
+        tarefa.descricao = novaDescricao;
+        li.querySelector('.app__section-task-list-item-description').textContent = novaDescricao;
+        salvarTarefas();
     });
     return li;
 };
