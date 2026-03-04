@@ -8,6 +8,7 @@ const tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
 atualizarTarefas();
 
 btnAdicionarTarefa.addEventListener('click', () => {
+    formAdicionarTarefa.reset();
     formAdicionarTarefa.classList.toggle('hidden');
     return;
 });
@@ -23,7 +24,7 @@ formAdicionarTarefa.addEventListener('submit', (event) => {
     const elementoTarefa = criarElementoTarefa(tarefa);
     ulTarefas.append(elementoTarefa);
     
-    localStorage.setItem('tarefas', JSON.stringify(tarefas));
+    salvarTarefas();
     formAdicionarTarefa.reset();
     formAdicionarTarefa.classList.add('hidden');
     return;
@@ -44,6 +45,16 @@ function criarElementoTarefa(tarefa) {
         <img src="/imagens/edit.png">
     </button>
     `;
+
+    li.querySelector('.app_button-edit').addEventListener('click', () => {
+        const novaDescricao = prompt('Digite a nova descrição da tarefa:');
+        
+        if (novaDescricao) {
+            tarefa.descricao = novaDescricao;
+            li.querySelector('.app__section-task-list-item-description').textContent = novaDescricao;
+            salvarTarefas();
+        };
+    });
     return li;
 };
 
@@ -53,4 +64,9 @@ function atualizarTarefas() {
         ulTarefas.append(elementoTarefa);
     };
     return; 
+};
+
+function salvarTarefas() {
+    localStorage.setItem('tarefas', JSON.stringify(tarefas));
+    return;
 };
