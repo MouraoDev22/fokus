@@ -26,7 +26,7 @@ const beep = new Audio('/sons/beep.mp3');
 let idTemporizador = null;
 
 let tempoEscolhido = null;
-let focoTempo = 1500;
+let focoTempo = 10;
 let curtoTempo = 300;
 let longoTempo = 900;
 
