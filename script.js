@@ -53,18 +53,22 @@ longoBtn.addEventListener('click', () => {
 
 musicaFocoInput.addEventListener('change', () => {
     if (musica.paused) {
-        return musica.play();
+        musica.play();
+        return;
     } else {
-        return musica.pause();
+        musica.pause();
+        return;
     };
 });
 
 startPauseBtn.addEventListener('click', () => {
     if (idTemporizador) {
-        return pausar();
+        pausar();
+        return;
     };
     
-    return iniciar();
+    iniciar();
+    return;
 });
 
 tempoEscolhido = focoTempo;
@@ -114,6 +118,7 @@ function alterarContexto(contexto, tipoTempo) {
 
 function iniciar() {
     play.play();
+    
     startPauseBtnSpan.textContent = 'Pausar';
     startPauseBtnImg.setAttribute('src', '/imagens/pause.png');
 
@@ -121,7 +126,7 @@ function iniciar() {
         tempoEscolhido -= 1;
         atualizarTemporizador(tempoEscolhido);
         
-        if (tempoEscolhido === 0) {
+        if (tempoEscolhido < 0) {
             zerar();
             return;
         };
@@ -142,13 +147,29 @@ function pausar() {
 
 function zerar() {
     beep.play();
+    alert('Tempo finalizado!');
+
+    const focoAtivo = html.getAttribute('data-contexto') === 'foco';
+    const curtoAtivo = html.getAttribute('data-contexto') === 'descanso-curto';
+    const longoAtivo = html.getAttribute('data-contexto') === 'descanso-longo';
             
     startPauseBtnSpan.textContent = 'Começar';
     startPauseBtnImg.setAttribute('src', '/imagens/play_arrow.png');
             
-    tempoEscolhido = null;
+    if (focoAtivo) {
+        const evento = new CustomEvent('FocoFinalizado');
+        document.dispatchEvent(evento);
+        
+        tempoEscolhido = focoTempo;
+    } else if (curtoAtivo) {
+        tempoEscolhido = curtoTempo;
+    } else {
+        tempoEscolhido = longoTempo;
+    };
+    
     clearInterval(idTemporizador);
     idTemporizador = null;
+    atualizarTemporizador(tempoEscolhido);
     return;
 };
 

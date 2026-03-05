@@ -73,7 +73,8 @@ function criarElementoTarefa(tarefa) {
 
         tarefa.descricao = novaDescricao;
         li.querySelector('.app__section-task-list-item-description').textContent = novaDescricao;
-        return salvarTarefas();
+        salvarTarefas();
+        return; 
     });
     return li;
 };
