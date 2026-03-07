@@ -4,7 +4,10 @@ const textarea = document.querySelector('.app__form-textarea');
 const ulTarefas = document.querySelector('.app__section-task-list');
 const paragrafoDescricaoTarefa = document.querySelector('.app__section-active-task-description');
 
-const tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
+const btnRemoverTarefasConcluidas = document.querySelector('#btn-remover-concluidas');
+const btnRemoverTarefasAll = document.querySelector('#btn-remover-todas');
+
+let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
 let tarefaSelecionada = null;
 let liTarefaSelecionada = null;
 
@@ -30,6 +33,22 @@ formAdicionarTarefa.addEventListener('submit', (event) => {
     salvarTarefas();
     formAdicionarTarefa.reset();
     formAdicionarTarefa.classList.add('hidden');
+    return;
+});
+
+btnRemoverTarefasConcluidas.addEventListener('click', () => { removerTarefas(true) });
+
+btnRemoverTarefasAll.addEventListener('click', () => { removerTarefas(false) });
+
+document.addEventListener('FocoFinalizado', () => {
+    if (tarefaSelecionada && liTarefaSelecionada) {
+        liTarefaSelecionada.classList.remove('app__section-task-list-item-active');
+        liTarefaSelecionada.classList.add('app__section-task-list-item-complete');
+        liTarefaSelecionada.querySelector('button').setAttribute('disabled', 'true');
+
+        tarefaSelecionada.completa = true;
+        salvarTarefas();
+    };
     return;
 });
 
@@ -90,18 +109,6 @@ function criarElementoTarefa(tarefa) {
     return li;
 };
 
-document.addEventListener('FocoFinalizado', () => {
-    if (tarefaSelecionada && liTarefaSelecionada) {
-        liTarefaSelecionada.classList.remove('app__section-task-list-item-active');
-        liTarefaSelecionada.classList.add('app__section-task-list-item-complete');
-        liTarefaSelecionada.querySelector('button').setAttribute('disabled', 'true');
-
-        tarefaSelecionada.completa = true;
-        salvarTarefas();
-    };
-    return;
-});
-
 function atualizarTarefas() {
     for (const tarefa of tarefas) {
         const elementoTarefa = criarElementoTarefa(tarefa);
@@ -112,5 +119,17 @@ function atualizarTarefas() {
 
 function salvarTarefas() {
     localStorage.setItem('tarefas', JSON.stringify(tarefas));
+    return;
+};
+
+function removerTarefas(somenteCompletas) {
+    const seletor = somenteCompletas ? '.app__section-task-list-item-complete' : '.app__section-task-list-item';
+    document.querySelectorAll(seletor).forEach((elemento) => {
+        elemento.remove();
+    });
+
+    tarefas = somenteCompletas ? tarefas.filter((tarefa) => !tarefa.completa) : [];
+    salvarTarefas();
+    
     return;
 };
