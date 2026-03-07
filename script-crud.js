@@ -49,27 +49,32 @@ function criarElementoTarefa(tarefa) {
     </button>
     `;
 
-    li.addEventListener('click', () => {
-        if (tarefaSelecionada === tarefa) {
-            li.classList.remove('app__section-task-list-item-active');
-            paragrafoDescricaoTarefa.textContent = '';
-            tarefaSelecionada = null;
-            liTarefaSelecionada = null;
-            return;
-        };
-        
-        paragrafoDescricaoTarefa.textContent = tarefa.descricao;
-        tarefaSelecionada = tarefa;
-        liTarefaSelecionada = li;
-        
-        document.querySelectorAll('.app__section-task-list-item').forEach((elemento) => {
-            elemento.classList.remove('app__section-task-list-item-active');
-        });
-
-        li.classList.add('app__section-task-list-item-active');
-        return;
-    });
+    if (tarefa.completa) {
+        li.classList.add('app__section-task-list-item-complete');
+        li.querySelector('button').setAttribute('disabled', 'true');
+    } else {
+        li.addEventListener('click', () => {
+            if (tarefaSelecionada === tarefa) {
+                li.classList.remove('app__section-task-list-item-active');
+                paragrafoDescricaoTarefa.textContent = '';
+                tarefaSelecionada = null;
+                liTarefaSelecionada = null;
+                return;
+            };
+            
+            paragrafoDescricaoTarefa.textContent = tarefa.descricao;
+            tarefaSelecionada = tarefa;
+            liTarefaSelecionada = li;
+            
+            document.querySelectorAll('.app__section-task-list-item').forEach((elemento) => {
+                elemento.classList.remove('app__section-task-list-item-active');
+            });
     
+            li.classList.add('app__section-task-list-item-active');
+            return;
+        });
+    };
+
     li.querySelector('.app_button-edit').addEventListener('click', () => {
         const novaDescricao = prompt('Digite a nova descrição da tarefa:');
         
@@ -90,6 +95,9 @@ document.addEventListener('FocoFinalizado', () => {
         liTarefaSelecionada.classList.remove('app__section-task-list-item-active');
         liTarefaSelecionada.classList.add('app__section-task-list-item-complete');
         liTarefaSelecionada.querySelector('button').setAttribute('disabled', 'true');
+
+        tarefaSelecionada.completa = true;
+        salvarTarefas();
     };
     return;
 });
