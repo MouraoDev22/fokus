@@ -1,28 +1,28 @@
-const musica: HTMLAudioElement = new Audio(
+const music: HTMLAudioElement = new Audio(
   "./assets/sons/luna-rise-part-one.mp3",
 );
 
-const play: HTMLAudioElement = new Audio("./assets/sons/play.wav");
-const pause: HTMLAudioElement = new Audio("./assets/sons/pause.mp3");
-const beep: HTMLAudioElement = new Audio("./assets/sons/beep.mp3");
+const mscPlay: HTMLAudioElement = new Audio("./assets/sons/play.wav");
+const mscPause: HTMLAudioElement = new Audio("./assets/sons/pause.mp3");
+const mscBeep: HTMLAudioElement = new Audio("./assets/sons/beep.mp3");
 
-let idTemporizador: number | null = null;
-let focoTempo: number = 1500;
-let curtoTempo: number = 300;
-let longoTempo: number = 900;
+let timerID: number | null = null;
+let focusTime: number = 1500;
+let shortBreakTime: number = 300;
+let longBreakTime: number = 900;
 
-let tempoEscolhido: number | null = focoTempo;
+let chosenTime: number | null = focusTime;
 
 addEventListeners();
-atualizarTemporizador(tempoEscolhido);
+updateTimer(chosenTime);
 
-function alterarContexto(contexto: string, tipoTempo: number): void {
+function changeContext(context: string, timeType: number): void {
   const html: HTMLElement | null = document.querySelector<HTMLElement>("html");
   const banner: HTMLImageElement | null =
     document.querySelector<HTMLImageElement>(".app__image");
-  const titulo: HTMLHeadingElement | null =
+  const title: HTMLHeadingElement | null =
     document.querySelector<HTMLHeadingElement>(".app__title");
-  const botoes: NodeListOf<HTMLButtonElement> =
+  const buttons: NodeListOf<HTMLButtonElement> =
     document.querySelectorAll<HTMLButtonElement>(".app__card-button");
 
   if (!html) {
@@ -33,32 +33,32 @@ function alterarContexto(contexto: string, tipoTempo: number): void {
     throw new Error("HTMLImageElement(banner) não encontrado.");
   }
 
-  if (!titulo) {
-    throw new Error("HTMLHeadingElement(titulo) não encontrado.");
+  if (!title) {
+    throw new Error("HTMLHeadingElement(title) não encontrado.");
   }
 
-  if (!botoes) {
-    throw new Error("NodeListOf<HTMLButtonElement>(botoes) não encontrado.");
+  if (!buttons) {
+    throw new Error("NodeListOf<HTMLButtonElement>(buttons) não encontrado.");
   }
 
-  atualizarTemporizador(tipoTempo);
-  tempoEscolhido = tipoTempo;
+  updateTimer(timeType);
+  chosenTime = timeType;
 
-  for (const botao of botoes) {
-    botao.classList.remove("active");
+  for (const button of buttons) {
+    button.classList.remove("active");
   }
 
-  html.setAttribute("data-contexto", contexto);
-  banner.setAttribute("src", `/imagens/${contexto}.png`);
+  html.setAttribute("data-contexto", context);
+  banner.setAttribute("src", `./assets/imagens/${context}.png`);
 
-  switch (contexto) {
+  switch (context) {
     case "foco":
       banner.setAttribute(
         "alt",
         "Arte de um homem utilizando headphones que aparenta estar debaixo da água",
       );
 
-      titulo.innerHTML = `
+      title.innerHTML = `
             Otimize sua produtividade,<br>
             <strong class="app__title-strong">mergulhe no que importa.</strong>
             `;
@@ -69,7 +69,7 @@ function alterarContexto(contexto: string, tipoTempo: number): void {
         "Arte de uma mulher utilizando headphones que aparenta estar debaixo da água",
       );
 
-      titulo.innerHTML = `
+      title.innerHTML = `
             Quel tal dar uma respirada?<br>
             <strong class="app__title-strong">Faça uma pausa curta!</strong>
             `;
@@ -80,7 +80,7 @@ function alterarContexto(contexto: string, tipoTempo: number): void {
         "Arte de uma mulher utilizando headphones que aparenta estar debaixo da água",
       );
 
-      titulo.innerHTML = `
+      title.innerHTML = `
             Hora de voltar à superfície.<br>
             <strong class="app__title-strong">Faça uma pausa longa.</strong>
             `;
@@ -91,200 +91,200 @@ function alterarContexto(contexto: string, tipoTempo: number): void {
   return;
 }
 
-function iniciar(): void {
-  play.play();
+function start(): void {
+  mscPlay.play();
 
-  const startPauseBtnSpan: HTMLSpanElement | null =
+  const startPauseButtonSpan: HTMLSpanElement | null =
     document.querySelector<HTMLSpanElement>("#start-pause span");
-  const startPauseBtnImg: HTMLImageElement | null =
+  const startPauseButtonImg: HTMLImageElement | null =
     document.querySelector<HTMLImageElement>("#start-pause img");
 
-  if (!startPauseBtnSpan) {
-    throw new Error("HTMLSpanElement(startPauseBtnSpan) não encontrado.");
+  if (!startPauseButtonSpan) {
+    throw new Error("HTMLSpanElement(startPauseButtonSpan) não encontrado.");
   }
 
-  if (!startPauseBtnImg) {
-    throw new Error("HTMLImageElement(startPauseBtnImg) não encontrado.");
+  if (!startPauseButtonImg) {
+    throw new Error("HTMLImageElement(startPauseButtonImg) não encontrado.");
   }
 
-  startPauseBtnSpan.textContent = "Pausar";
-  startPauseBtnImg.setAttribute("src", "/imagens/pause.png");
+  startPauseButtonSpan.textContent = "Pausar";
+  startPauseButtonImg.setAttribute("src", "/imagens/pause.png");
 
-  idTemporizador = setInterval((): void => {
-    if (tempoEscolhido === null) {
-      throw new Error("tempoEscolhido é null.");
+  timerID = setInterval((): void => {
+    if (chosenTime === null) {
+      throw new Error("chosenTime é null.");
     }
 
-    tempoEscolhido -= 1;
-    atualizarTemporizador(tempoEscolhido);
+    chosenTime -= 1;
+    updateTimer(chosenTime);
 
-    if (tempoEscolhido < 0) {
-      zerar();
+    if (chosenTime < 0) {
+      reset();
       return;
     }
   }, 1000);
   return;
 }
 
-function pausar(): void {
-  pause.play();
+function pause(): void {
+  mscPause.play();
 
-  const startPauseBtnSpan: HTMLSpanElement | null =
+  const startPauseButtonSpan: HTMLSpanElement | null =
     document.querySelector<HTMLSpanElement>("#start-pause span");
-  const startPauseBtnImg: HTMLImageElement | null =
+  const startPauseButtonImg: HTMLImageElement | null =
     document.querySelector<HTMLImageElement>("#start-pause img");
 
-  if (!startPauseBtnSpan) {
-    throw new Error("HTMLSpanElement(startPauseBtnSpan) não encontrado.");
+  if (!startPauseButtonSpan) {
+    throw new Error("HTMLSpanElement(startPauseButtonSpan) não encontrado.");
   }
 
-  if (!startPauseBtnImg) {
-    throw new Error("HTMLImageElement(startPauseBtnImg) não encontrado.");
+  if (!startPauseButtonImg) {
+    throw new Error("HTMLImageElement(startPauseButtonImg) não encontrado.");
   }
 
-  startPauseBtnSpan.textContent = "Começar";
-  startPauseBtnImg.setAttribute("src", "/imagens/play_arrow.png");
+  startPauseButtonSpan.textContent = "Começar";
+  startPauseButtonImg.setAttribute("src", "/imagens/play_arrow.png");
 
-  clearInterval(idTemporizador as number);
-  idTemporizador = null;
+  clearInterval(timerID as number);
+  timerID = null;
   return;
 }
 
-function zerar(): void {
+function reset(): void {
   const html: HTMLElement | null = document.querySelector<HTMLElement>("html");
-  const startPauseBtnSpan: HTMLSpanElement | null =
+  const startPauseButtonSpan: HTMLSpanElement | null =
     document.querySelector<HTMLSpanElement>("#start-pause span");
-  const startPauseBtnImg: HTMLImageElement | null =
+  const startPauseButtonImg: HTMLImageElement | null =
     document.querySelector<HTMLImageElement>("#start-pause img");
 
   if (!html) {
     throw new Error("HTMLElement(html) não encontrado.");
   }
 
-  if (!startPauseBtnSpan) {
-    throw new Error("HTMLSpanElement(startPauseBtnSpan) não encontrado.");
+  if (!startPauseButtonSpan) {
+    throw new Error("HTMLSpanElement(startPauseButtonSpan) não encontrado.");
   }
 
-  if (!startPauseBtnImg) {
-    throw new Error("HTMLImageElement(startPauseBtnImg) não encontrado.");
+  if (!startPauseButtonImg) {
+    throw new Error("HTMLImageElement(startPauseButtonImg) não encontrado.");
   }
 
-  beep.play();
+  mscBeep.play();
   alert("Tempo finalizado!");
 
-  const focoAtivo: boolean = html.getAttribute("data-contexto") === "foco";
-  const curtoAtivo: boolean =
+  const focusActive: boolean = html.getAttribute("data-contexto") === "foco";
+  const shortBreakActive: boolean =
     html.getAttribute("data-contexto") === "descanso-curto";
-  const longoAtivo: boolean =
+  const longBreakActive: boolean =
     html.getAttribute("data-contexto") === "descanso-longo";
 
-  startPauseBtnSpan.textContent = "Começar";
-  startPauseBtnImg.setAttribute("src", "/imagens/play_arrow.png");
+  startPauseButtonSpan.textContent = "Começar";
+  startPauseButtonImg.setAttribute("src", "/imagens/play_arrow.png");
 
-  if (focoAtivo) {
-    const evento = new CustomEvent("FocoFinalizado");
-    document.dispatchEvent(evento);
+  if (focusActive) {
+    const event = new CustomEvent("FocoFinalizado");
+    document.dispatchEvent(event);
 
-    tempoEscolhido = focoTempo;
-  } else if (curtoAtivo) {
-    tempoEscolhido = curtoTempo;
+    chosenTime = focusTime;
+  } else if (shortBreakActive) {
+    chosenTime = shortBreakTime;
   } else {
-    tempoEscolhido = longoTempo;
+    chosenTime = longBreakTime;
   }
 
-  clearInterval(idTemporizador as number);
-  idTemporizador = null;
-  atualizarTemporizador(tempoEscolhido);
+  clearInterval(timerID as number);
+  timerID = null;
+  updateTimer(chosenTime);
   return;
 }
 
-function atualizarTemporizador(tipoTempo: number): void {
-  const temporizador: HTMLDivElement | null =
+function updateTimer(timeType: number): void {
+  const timer: HTMLDivElement | null =
     document.querySelector<HTMLDivElement>("#timer");
 
-  if (!temporizador) {
-    throw new Error("HTMLDivElement(temporizador) não encontrado!");
+  if (!timer) {
+    throw new Error("HTMLDivElement(timer) não encontrado!");
   }
 
-  const tempo: Date = new Date(tipoTempo * 1000);
-  const tempoFormatado: string = tempo.toLocaleTimeString("pt-BR", {
+  const time: Date = new Date(timeType * 1000);
+  const formattedTime: string = time.toLocaleTimeString("pt-BR", {
     minute: "2-digit",
     second: "2-digit",
   });
-  temporizador.innerHTML = `${tempoFormatado}`;
+  timer.innerHTML = `${formattedTime}`;
   return;
 }
 
 function addEventListeners(): void {
-  const focoBtn: HTMLButtonElement | null =
+  const focusButton: HTMLButtonElement | null =
     document.querySelector<HTMLButtonElement>(".app__card-button--foco");
-  const curtoBtn: HTMLButtonElement | null =
+  const shortBreakButton: HTMLButtonElement | null =
     document.querySelector<HTMLButtonElement>(".app__card-button--curto");
-  const longoBtn: HTMLButtonElement | null =
+  const longBreakButton: HTMLButtonElement | null =
     document.querySelector<HTMLButtonElement>(".app__card-button--longo");
-  const musicaFocoInput: HTMLInputElement | null =
+  const focusMusicToggle: HTMLInputElement | null =
     document.querySelector<HTMLInputElement>("#alternar-musica");
-  const startPauseBtn: HTMLButtonElement | null =
+  const startPauseButton: HTMLButtonElement | null =
     document.querySelector<HTMLButtonElement>("#start-pause");
 
-  if (!focoBtn) {
-    throw new Error("HTMLButtonElement(focoBtn) não encontrado.");
+  if (!focusButton) {
+    throw new Error("HTMLButtonElement(focusButton) não encontrado.");
   }
 
-  if (!curtoBtn) {
-    throw new Error("HTMLButtonElement(curtoBtn) não encontrado.");
+  if (!shortBreakButton) {
+    throw new Error("HTMLButtonElement(shortBreakButton) não encontrado.");
   }
 
-  if (!longoBtn) {
-    throw new Error("HTMLButtonElement(longoBtn) não encontrado.");
+  if (!longBreakButton) {
+    throw new Error("HTMLButtonElement(longBreakButton) não encontrado.");
   }
 
-  if (!musicaFocoInput) {
-    throw new Error("HTMLInputElement(musicaFocoInput) não encontrado.");
+  if (!focusMusicToggle) {
+    throw new Error("HTMLInputElement(focusMusicToggle) não encontrado.");
   }
 
-  if (!startPauseBtn) {
-    throw new Error("HTMLButtonElement(startPauseBtn) não encontrado.");
+  if (!startPauseButton) {
+    throw new Error("HTMLButtonElement(startPauseButton) não encontrado.");
   }
 
-  focoBtn.addEventListener("click", (): void => {
-    alterarContexto("foco", focoTempo);
+  focusButton.addEventListener("click", (): void => {
+    changeContext("foco", focusTime);
 
-    focoBtn.classList.add("active");
+    focusButton.classList.add("active");
     return;
   });
 
-  curtoBtn.addEventListener("click", (): void => {
-    alterarContexto("descanso-curto", curtoTempo);
+  shortBreakButton.addEventListener("click", (): void => {
+    changeContext("descanso-curto", shortBreakTime);
 
-    curtoBtn.classList.add("active");
+    shortBreakButton.classList.add("active");
     return;
   });
 
-  longoBtn.addEventListener("click", (): void => {
-    alterarContexto("descanso-longo", longoTempo);
+  longBreakButton.addEventListener("click", (): void => {
+    changeContext("descanso-longo", longBreakTime);
 
-    longoBtn.classList.add("active");
+    longBreakButton.classList.add("active");
     return;
   });
 
-  musicaFocoInput.addEventListener("change", (): void => {
-    if (musica.paused) {
-      musica.play();
+  focusMusicToggle.addEventListener("change", (): void => {
+    if (music.paused) {
+      music.play();
       return;
     } else {
-      musica.pause();
+      music.pause();
       return;
     }
   });
 
-  startPauseBtn.addEventListener("click", (): void => {
-    if (idTemporizador) {
-      pausar();
+  startPauseButton.addEventListener("click", (): void => {
+    if (timerID) {
+      pause();
       return;
     }
 
-    iniciar();
+    start();
     return;
   });
 

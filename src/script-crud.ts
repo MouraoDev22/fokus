@@ -1,57 +1,53 @@
-interface Tarefa {
-  descricao: string;
-  concluida: boolean;
+interface Task {
+  description: string;
+  completed: boolean;
 }
 
-interface EstadoAplicacao {
-  tarefas: Tarefa[];
-  tarefaSelecionada: Tarefa | null;
+interface ApplicationState {
+  tasks: Task[];
+  selectedTask: Task | null;
 }
 
-let estadoInicial: EstadoAplicacao = {
-  tarefas: JSON.parse(localStorage.getItem("tarefas") || "[]"),
-  tarefaSelecionada: null,
+let initialState: ApplicationState = {
+  tasks: JSON.parse(localStorage.getItem("tarefas") || "[]"),
+  selectedTask: null,
 };
 
-function selecionarTarefa(
-  estado: EstadoAplicacao,
-  tarefa: Tarefa,
-): EstadoAplicacao {
+function selectTask(state: ApplicationState, task: Task): ApplicationState {
   return {
-    ...estado,
-    tarefaSelecionada: tarefa === estado.tarefaSelecionada ? null : tarefa,
+    ...state,
+    selectedTask: task === state.selectedTask ? null : task,
   };
 }
 
-atualizarUI();
+updateUI();
 
-function atualizarUI(): void {
-  const ulTarefas: HTMLUListElement | null =
+function updateUI(): void {
+  const ulTasks: HTMLUListElement | null =
     document.querySelector<HTMLUListElement>(".app__section-task-list");
-  const paragrafoDescricaoTarefa = document.querySelector<HTMLParagraphElement>(
+  const taskDescriptionParagraph = document.querySelector<HTMLParagraphElement>(
     ".app__section-active-task-description",
   );
 
-  if (!ulTarefas)
-    throw new Error("HTMLUListElement(ulTarefas) não encontrado!");
+  if (!ulTasks) throw new Error("HTMLUListElement(ulTasks) não encontrado!");
 
-  ulTarefas.innerHTML = "";
+  ulTasks.innerHTML = "";
 
-  if (paragrafoDescricaoTarefa) {
-    paragrafoDescricaoTarefa.textContent = estadoInicial.tarefaSelecionada
-      ? estadoInicial.tarefaSelecionada.descricao
+  if (taskDescriptionParagraph) {
+    taskDescriptionParagraph.textContent = initialState.selectedTask
+      ? initialState.selectedTask.description
       : "";
   }
 
-  estadoInicial.tarefas.forEach((tarefa: Tarefa) => {
+  initialState.tasks.forEach((task: Task) => {
     const li = document.createElement("li");
     li.classList.add("app__section-task-list-item");
 
-    if (tarefa.concluida) {
+    if (task.completed) {
       li.classList.add("app__section-task-list-item-complete");
     }
 
-    if (tarefa === estadoInicial.tarefaSelecionada) {
+    if (task === initialState.selectedTask) {
       li.classList.add("app__section-task-list-item-active");
     }
 
@@ -60,31 +56,33 @@ function atualizarUI(): void {
           <circle cx="12" cy="12" r="12" fill="#FFF"></circle>
           <path d="M9 16.1719L19.5938 5.57812L21 6.98438L9 18.9844L3.42188 13.4062L4.82812 12L9 16.1719Z" fill="#01080E"></path>
       </svg>
-      <p class="app__section-task-list-item-description">${tarefa.descricao}</p>
-      <button class="app_button-edit" ${tarefa.concluida ? "disabled" : ""}>
+      <p class="app__section-task-list-item-description">${task.description}</p>
+      <button class="app_button-edit" ${task.completed ? "disabled" : ""}>
           <img src="/imagens/edit.png">
       </button>
     `;
 
     li.addEventListener("click", () => {
-      if (!tarefa.concluida) {
-        estadoInicial = selecionarTarefa(estadoInicial, tarefa);
-        atualizarUI();
+      if (!task.completed) {
+        initialState = selectTask(initialState, task);
+        updateUI();
       }
     });
 
-    const btnEdit = li.querySelector(".app_button-edit") as HTMLButtonElement;
-    btnEdit.addEventListener("click", (event) => {
+    const editButton = li.querySelector(
+      ".app_button-edit",
+    ) as HTMLButtonElement;
+    editButton.addEventListener("click", (event) => {
       event.stopPropagation();
-      const novaDescricao = prompt("Digite a nova descrição da tarefa:");
-      if (novaDescricao && novaDescricao.trim() !== "") {
-        tarefa.descricao = novaDescricao;
-        localStorage.setItem("tarefas", JSON.stringify(estadoInicial.tarefas));
-        atualizarUI();
+      const newDescription = prompt("Digite a nova descrição da tarefa:");
+      if (newDescription && newDescription.trim() !== "") {
+        task.description = newDescription;
+        localStorage.setItem("tarefas", JSON.stringify(initialState.tasks));
+        updateUI();
       }
     });
 
-    ulTarefas.append(li);
+    ulTasks.append(li);
   });
 
   return;
