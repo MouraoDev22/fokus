@@ -1,1 +1,62 @@
-"use strict";let estadoInicial={tarefas:JSON.parse(localStorage.getItem("tarefas")||"[]"),tarefaSelecionada:null};function selecionarTarefa(a,t){return{...a,tarefaSelecionada:t===a.tarefaSelecionada?null:t}}function atualizarUI(){const a=document.querySelector(".app__section-task-list"),t=document.querySelector(".app__section-active-task-description");if(!a)throw new Error("HTMLUListElement(ulTarefas) não encontrado!");a.innerHTML="",t&&(t.textContent=estadoInicial.tarefaSelecionada?estadoInicial.tarefaSelecionada.descricao:""),estadoInicial.tarefas.forEach(t=>{const e=document.createElement("li");e.classList.add("app__section-task-list-item"),t.concluida&&e.classList.add("app__section-task-list-item-complete"),t===estadoInicial.tarefaSelecionada&&e.classList.add("app__section-task-list-item-active"),e.innerHTML=`\n      <svg class="app__section-task-icon-status" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">\n          <circle cx="12" cy="12" r="12" fill="#FFF"></circle>\n          <path d="M9 16.1719L19.5938 5.57812L21 6.98438L9 18.9844L3.42188 13.4062L4.82812 12L9 16.1719Z" fill="#01080E"></path>\n      </svg>\n      <p class="app__section-task-list-item-description">${t.descricao}</p>\n      <button class="app_button-edit" ${t.concluida?"disabled":""}>\n          <img src="/imagens/edit.png">\n      </button>\n    `,e.addEventListener("click",()=>{t.concluida||(estadoInicial=selecionarTarefa(estadoInicial,t),atualizarUI())});e.querySelector(".app_button-edit").addEventListener("click",a=>{a.stopPropagation();const e=prompt("Digite a nova descrição da tarefa:");e&&""!==e.trim()&&(t.descricao=e,localStorage.setItem("tarefas",JSON.stringify(estadoInicial.tarefas)),atualizarUI())}),a.append(e)})}atualizarUI();
+"use strict";
+let estadoInicial = {
+    tarefas: JSON.parse(localStorage.getItem("tarefas") || "[]"),
+    tarefaSelecionada: null,
+};
+function selecionarTarefa(estado, tarefa) {
+    return {
+        ...estado,
+        tarefaSelecionada: tarefa === estado.tarefaSelecionada ? null : tarefa,
+    };
+}
+atualizarUI();
+function atualizarUI() {
+    const ulTarefas = document.querySelector(".app__section-task-list");
+    const paragrafoDescricaoTarefa = document.querySelector(".app__section-active-task-description");
+    if (!ulTarefas)
+        throw new Error("HTMLUListElement(ulTarefas) não encontrado!");
+    ulTarefas.innerHTML = "";
+    if (paragrafoDescricaoTarefa) {
+        paragrafoDescricaoTarefa.textContent = estadoInicial.tarefaSelecionada
+            ? estadoInicial.tarefaSelecionada.descricao
+            : "";
+    }
+    estadoInicial.tarefas.forEach((tarefa) => {
+        const li = document.createElement("li");
+        li.classList.add("app__section-task-list-item");
+        if (tarefa.concluida) {
+            li.classList.add("app__section-task-list-item-complete");
+        }
+        if (tarefa === estadoInicial.tarefaSelecionada) {
+            li.classList.add("app__section-task-list-item-active");
+        }
+        li.innerHTML = `
+      <svg class="app__section-task-icon-status" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="12" fill="#FFF"></circle>
+          <path d="M9 16.1719L19.5938 5.57812L21 6.98438L9 18.9844L3.42188 13.4062L4.82812 12L9 16.1719Z" fill="#01080E"></path>
+      </svg>
+      <p class="app__section-task-list-item-description">${tarefa.descricao}</p>
+      <button class="app_button-edit" ${tarefa.concluida ? "disabled" : ""}>
+          <img src="/imagens/edit.png">
+      </button>
+    `;
+        li.addEventListener("click", () => {
+            if (!tarefa.concluida) {
+                estadoInicial = selecionarTarefa(estadoInicial, tarefa);
+                atualizarUI();
+            }
+        });
+        const btnEdit = li.querySelector(".app_button-edit");
+        btnEdit.addEventListener("click", (event) => {
+            event.stopPropagation();
+            const novaDescricao = prompt("Digite a nova descrição da tarefa:");
+            if (novaDescricao && novaDescricao.trim() !== "") {
+                tarefa.descricao = novaDescricao;
+                localStorage.setItem("tarefas", JSON.stringify(estadoInicial.tarefas));
+                atualizarUI();
+            }
+        });
+        ulTarefas.append(li);
+    });
+    return;
+}

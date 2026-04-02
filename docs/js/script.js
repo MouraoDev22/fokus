@@ -1,35 +1,31 @@
 "use strict";
-const html = document.querySelector("html");
-const banner = document.querySelector(".app__image");
-const titulo = document.querySelector(".app__title");
-const focoBtn = document.querySelector(".app__card-button--foco");
-const curtoBtn = document.querySelector(".app__card-button--curto");
-const longoBtn = document.querySelector(".app__card-button--longo");
-const botoes = document.querySelectorAll(".app__card-button");
-const musicaFocoInput = document.querySelector("#alternar-musica");
-const startPauseBtn = document.querySelector("#start-pause");
-const startPauseBtnSpan = document.querySelector("#start-pause span");
-const startPauseBtnImg = document.querySelector("#start-pause img");
-const temporizador = document.querySelector("#timer");
-const musica = new Audio("/sons/luna-rise-part-one.mp3");
-musica.loop = true;
-const play = new Audio("/sons/play.wav");
-const pause = new Audio("/sons/pause.mp3");
-const beep = new Audio("/sons/beep.mp3");
+const musica = new Audio("./assets/sons/luna-rise-part-one.mp3");
+const play = new Audio("./assets/sons/play.wav");
+const pause = new Audio("./assets/sons/pause.mp3");
+const beep = new Audio("./assets/sons/beep.mp3");
 let idTemporizador = null;
-let tempoEscolhido = null;
 let focoTempo = 1500;
 let curtoTempo = 300;
 let longoTempo = 900;
+let tempoEscolhido = focoTempo;
 addEventListeners();
-tempoEscolhido = focoTempo;
 atualizarTemporizador(tempoEscolhido);
 function alterarContexto(contexto, tipoTempo) {
     const html = document.querySelector("html");
     const banner = document.querySelector(".app__image");
     const titulo = document.querySelector(".app__title");
-    if (!html || !banner || !titulo) {
-        throw new Error("Elementos do DOM não encontrados.");
+    const botoes = document.querySelectorAll(".app__card-button");
+    if (!html) {
+        throw new Error("HTMLElement(html) não encontrado.");
+    }
+    if (!banner) {
+        throw new Error("HTMLImageElement(banner) não encontrado.");
+    }
+    if (!titulo) {
+        throw new Error("HTMLHeadingElement(titulo) não encontrado.");
+    }
+    if (!botoes) {
+        throw new Error("NodeListOf<HTMLButtonElement>(botoes) não encontrado.");
     }
     atualizarTemporizador(tipoTempo);
     tempoEscolhido = tipoTempo;
@@ -69,8 +65,11 @@ function iniciar() {
     play.play();
     const startPauseBtnSpan = document.querySelector("#start-pause span");
     const startPauseBtnImg = document.querySelector("#start-pause img");
-    if (!startPauseBtnSpan || !startPauseBtnImg) {
-        throw new Error("Elementos do DOM não encontrados.");
+    if (!startPauseBtnSpan) {
+        throw new Error("HTMLSpanElement(startPauseBtnSpan) não encontrado.");
+    }
+    if (!startPauseBtnImg) {
+        throw new Error("HTMLImageElement(startPauseBtnImg) não encontrado.");
     }
     startPauseBtnSpan.textContent = "Pausar";
     startPauseBtnImg.setAttribute("src", "/imagens/pause.png");
@@ -91,8 +90,11 @@ function pausar() {
     pause.play();
     const startPauseBtnSpan = document.querySelector("#start-pause span");
     const startPauseBtnImg = document.querySelector("#start-pause img");
-    if (!startPauseBtnSpan || !startPauseBtnImg) {
-        throw new Error("Elementos do DOM não encontrados.");
+    if (!startPauseBtnSpan) {
+        throw new Error("HTMLSpanElement(startPauseBtnSpan) não encontrado.");
+    }
+    if (!startPauseBtnImg) {
+        throw new Error("HTMLImageElement(startPauseBtnImg) não encontrado.");
     }
     startPauseBtnSpan.textContent = "Começar";
     startPauseBtnImg.setAttribute("src", "/imagens/play_arrow.png");
@@ -104,8 +106,14 @@ function zerar() {
     const html = document.querySelector("html");
     const startPauseBtnSpan = document.querySelector("#start-pause span");
     const startPauseBtnImg = document.querySelector("#start-pause img");
-    if (!html || !startPauseBtnSpan || !startPauseBtnImg) {
-        throw new Error("Elementos do DOM não encontrados.");
+    if (!html) {
+        throw new Error("HTMLElement(html) não encontrado.");
+    }
+    if (!startPauseBtnSpan) {
+        throw new Error("HTMLSpanElement(startPauseBtnSpan) não encontrado.");
+    }
+    if (!startPauseBtnImg) {
+        throw new Error("HTMLImageElement(startPauseBtnImg) não encontrado.");
     }
     beep.play();
     alert("Tempo finalizado!");
@@ -149,12 +157,20 @@ function addEventListeners() {
     const longoBtn = document.querySelector(".app__card-button--longo");
     const musicaFocoInput = document.querySelector("#alternar-musica");
     const startPauseBtn = document.querySelector("#start-pause");
-    if (!focoBtn ||
-        !curtoBtn ||
-        !longoBtn ||
-        !musicaFocoInput ||
-        !startPauseBtn) {
-        throw new Error("Elementos do DOM não encontrados.");
+    if (!focoBtn) {
+        throw new Error("HTMLButtonElement(focoBtn) não encontrado.");
+    }
+    if (!curtoBtn) {
+        throw new Error("HTMLButtonElement(curtoBtn) não encontrado.");
+    }
+    if (!longoBtn) {
+        throw new Error("HTMLButtonElement(longoBtn) não encontrado.");
+    }
+    if (!musicaFocoInput) {
+        throw new Error("HTMLInputElement(musicaFocoInput) não encontrado.");
+    }
+    if (!startPauseBtn) {
+        throw new Error("HTMLButtonElement(startPauseBtn) não encontrado.");
     }
     focoBtn.addEventListener("click", () => {
         alterarContexto("foco", focoTempo);

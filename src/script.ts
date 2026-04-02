@@ -1,60 +1,44 @@
-const html: HTMLElement | null = document.querySelector<HTMLElement>("html");
+const musica: HTMLAudioElement = new Audio(
+  "./assets/sons/luna-rise-part-one.mp3",
+);
 
-const banner: HTMLImageElement | null =
-  document.querySelector<HTMLImageElement>(".app__image");
-const titulo: HTMLHeadingElement | null =
-  document.querySelector<HTMLHeadingElement>(".app__title");
-
-const focoBtn: HTMLButtonElement | null =
-  document.querySelector<HTMLButtonElement>(".app__card-button--foco");
-const curtoBtn: HTMLButtonElement | null =
-  document.querySelector<HTMLButtonElement>(".app__card-button--curto");
-const longoBtn: HTMLButtonElement | null =
-  document.querySelector<HTMLButtonElement>(".app__card-button--longo");
-const botoes: NodeListOf<HTMLButtonElement> =
-  document.querySelectorAll<HTMLButtonElement>(".app__card-button");
-
-const musicaFocoInput: HTMLInputElement | null =
-  document.querySelector<HTMLInputElement>("#alternar-musica");
-
-const startPauseBtn: HTMLButtonElement | null =
-  document.querySelector<HTMLButtonElement>("#start-pause");
-const startPauseBtnSpan: HTMLSpanElement | null =
-  document.querySelector<HTMLSpanElement>("#start-pause span");
-const startPauseBtnImg: HTMLImageElement | null =
-  document.querySelector<HTMLImageElement>("#start-pause img");
-
-const temporizador: HTMLDivElement | null =
-  document.querySelector<HTMLDivElement>("#timer");
-
-const musica: HTMLAudioElement = new Audio("/sons/luna-rise-part-one.mp3");
-musica.loop = true;
-
-const play: HTMLAudioElement = new Audio("/sons/play.wav");
-const pause: HTMLAudioElement = new Audio("/sons/pause.mp3");
-const beep: HTMLAudioElement = new Audio("/sons/beep.mp3");
+const play: HTMLAudioElement = new Audio("./assets/sons/play.wav");
+const pause: HTMLAudioElement = new Audio("./assets/sons/pause.mp3");
+const beep: HTMLAudioElement = new Audio("./assets/sons/beep.mp3");
 
 let idTemporizador: number | null = null;
-
-let tempoEscolhido: number | null = null;
 let focoTempo: number = 1500;
 let curtoTempo: number = 300;
 let longoTempo: number = 900;
 
+let tempoEscolhido: number | null = focoTempo;
+
 addEventListeners();
-tempoEscolhido = focoTempo;
 atualizarTemporizador(tempoEscolhido);
 
 function alterarContexto(contexto: string, tipoTempo: number): void {
   const html: HTMLElement | null = document.querySelector<HTMLElement>("html");
-
   const banner: HTMLImageElement | null =
     document.querySelector<HTMLImageElement>(".app__image");
   const titulo: HTMLHeadingElement | null =
     document.querySelector<HTMLHeadingElement>(".app__title");
+  const botoes: NodeListOf<HTMLButtonElement> =
+    document.querySelectorAll<HTMLButtonElement>(".app__card-button");
 
-  if (!html || !banner || !titulo) {
-    throw new Error("Elementos do DOM não encontrados.");
+  if (!html) {
+    throw new Error("HTMLElement(html) não encontrado.");
+  }
+
+  if (!banner) {
+    throw new Error("HTMLImageElement(banner) não encontrado.");
+  }
+
+  if (!titulo) {
+    throw new Error("HTMLHeadingElement(titulo) não encontrado.");
+  }
+
+  if (!botoes) {
+    throw new Error("NodeListOf<HTMLButtonElement>(botoes) não encontrado.");
   }
 
   atualizarTemporizador(tipoTempo);
@@ -115,8 +99,12 @@ function iniciar(): void {
   const startPauseBtnImg: HTMLImageElement | null =
     document.querySelector<HTMLImageElement>("#start-pause img");
 
-  if (!startPauseBtnSpan || !startPauseBtnImg) {
-    throw new Error("Elementos do DOM não encontrados.");
+  if (!startPauseBtnSpan) {
+    throw new Error("HTMLSpanElement(startPauseBtnSpan) não encontrado.");
+  }
+
+  if (!startPauseBtnImg) {
+    throw new Error("HTMLImageElement(startPauseBtnImg) não encontrado.");
   }
 
   startPauseBtnSpan.textContent = "Pausar";
@@ -146,8 +134,12 @@ function pausar(): void {
   const startPauseBtnImg: HTMLImageElement | null =
     document.querySelector<HTMLImageElement>("#start-pause img");
 
-  if (!startPauseBtnSpan || !startPauseBtnImg) {
-    throw new Error("Elementos do DOM não encontrados.");
+  if (!startPauseBtnSpan) {
+    throw new Error("HTMLSpanElement(startPauseBtnSpan) não encontrado.");
+  }
+
+  if (!startPauseBtnImg) {
+    throw new Error("HTMLImageElement(startPauseBtnImg) não encontrado.");
   }
 
   startPauseBtnSpan.textContent = "Começar";
@@ -160,14 +152,21 @@ function pausar(): void {
 
 function zerar(): void {
   const html: HTMLElement | null = document.querySelector<HTMLElement>("html");
-
   const startPauseBtnSpan: HTMLSpanElement | null =
     document.querySelector<HTMLSpanElement>("#start-pause span");
   const startPauseBtnImg: HTMLImageElement | null =
     document.querySelector<HTMLImageElement>("#start-pause img");
 
-  if (!html || !startPauseBtnSpan || !startPauseBtnImg) {
-    throw new Error("Elementos do DOM não encontrados.");
+  if (!html) {
+    throw new Error("HTMLElement(html) não encontrado.");
+  }
+
+  if (!startPauseBtnSpan) {
+    throw new Error("HTMLSpanElement(startPauseBtnSpan) não encontrado.");
+  }
+
+  if (!startPauseBtnImg) {
+    throw new Error("HTMLImageElement(startPauseBtnImg) não encontrado.");
   }
 
   beep.play();
@@ -223,21 +222,29 @@ function addEventListeners(): void {
     document.querySelector<HTMLButtonElement>(".app__card-button--curto");
   const longoBtn: HTMLButtonElement | null =
     document.querySelector<HTMLButtonElement>(".app__card-button--longo");
-
   const musicaFocoInput: HTMLInputElement | null =
     document.querySelector<HTMLInputElement>("#alternar-musica");
-
   const startPauseBtn: HTMLButtonElement | null =
     document.querySelector<HTMLButtonElement>("#start-pause");
 
-  if (
-    !focoBtn ||
-    !curtoBtn ||
-    !longoBtn ||
-    !musicaFocoInput ||
-    !startPauseBtn
-  ) {
-    throw new Error("Elementos do DOM não encontrados.");
+  if (!focoBtn) {
+    throw new Error("HTMLButtonElement(focoBtn) não encontrado.");
+  }
+
+  if (!curtoBtn) {
+    throw new Error("HTMLButtonElement(curtoBtn) não encontrado.");
+  }
+
+  if (!longoBtn) {
+    throw new Error("HTMLButtonElement(longoBtn) não encontrado.");
+  }
+
+  if (!musicaFocoInput) {
+    throw new Error("HTMLInputElement(musicaFocoInput) não encontrado.");
+  }
+
+  if (!startPauseBtn) {
+    throw new Error("HTMLButtonElement(startPauseBtn) não encontrado.");
   }
 
   focoBtn.addEventListener("click", (): void => {
