@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "rootDir": "./src",
+    "outDir": "./docs/js",
+    "noEmitOnError": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "removeComments": true,
+    "sourceMap": false
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "script-crud.ts"]
+}
