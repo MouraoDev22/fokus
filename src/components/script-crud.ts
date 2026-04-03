@@ -57,6 +57,7 @@ function createTaskElement(task: Task): HTMLLIElement {
   } else {
     li.addEventListener("click", (): void => {
       state = selectTask(state, task);
+      console.log(state.selectedTask);
 
       if (state.selectedTask === task) {
         taskDescriptionParagraph.textContent = task.description;

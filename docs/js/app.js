@@ -1,2 +1,2 @@
-import './components/script.js';
-import './components/script-crud.js';
+import "./components/script.js";
+import "./components/script-crud.js";

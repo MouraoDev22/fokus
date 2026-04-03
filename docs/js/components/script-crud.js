@@ -38,6 +38,7 @@ function createTaskElement(task) {
     else {
         li.addEventListener("click", () => {
             state = selectTask(state, task);
+            console.log(state.selectedTask);
             if (state.selectedTask === task) {
                 taskDescriptionParagraph.textContent = task.description;
                 selectedTaskElement = li;
