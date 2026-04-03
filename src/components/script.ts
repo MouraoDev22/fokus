@@ -13,8 +13,11 @@ let longBreakTime: number = 900;
 
 let chosenTime: number | null = focusTime;
 
-addEventListeners();
-updateTimer(chosenTime);
+document.addEventListener<"DOMContentLoaded">("DOMContentLoaded", (): void => {
+  addEventListeners();
+  updateTimer(chosenTime as number);
+  return;
+});
 
 function changeContext(context: string, timeType: number): void {
   const html: HTMLElement | null = document.querySelector<HTMLElement>("html");
@@ -108,7 +111,7 @@ function start(): void {
   }
 
   startPauseButtonSpan.textContent = "Pausar";
-  startPauseButtonImg.setAttribute("src", "/imagens/pause.png");
+  startPauseButtonImg.setAttribute("src", "./assets/imagens/pause.png");
 
   timerID = setInterval((): void => {
     if (chosenTime === null) {
@@ -143,7 +146,7 @@ function pause(): void {
   }
 
   startPauseButtonSpan.textContent = "Começar";
-  startPauseButtonImg.setAttribute("src", "/imagens/play_arrow.png");
+  startPauseButtonImg.setAttribute("src", "./assets/imagens/play_arrow.png");
 
   clearInterval(timerID as number);
   timerID = null;
@@ -179,7 +182,7 @@ function reset(): void {
     html.getAttribute("data-contexto") === "descanso-longo";
 
   startPauseButtonSpan.textContent = "Começar";
-  startPauseButtonImg.setAttribute("src", "/imagens/play_arrow.png");
+  startPauseButtonImg.setAttribute("src", "./assets/imagens/play_arrow.png");
 
   if (focusActive) {
     const event = new CustomEvent("FocoFinalizado");
@@ -247,28 +250,28 @@ function addEventListeners(): void {
     throw new Error("HTMLButtonElement(startPauseButton) não encontrado.");
   }
 
-  focusButton.addEventListener("click", (): void => {
+  focusButton.addEventListener<"click">("click", (): void => {
     changeContext("foco", focusTime);
 
     focusButton.classList.add("active");
     return;
   });
 
-  shortBreakButton.addEventListener("click", (): void => {
+  shortBreakButton.addEventListener<"click">("click", (): void => {
     changeContext("descanso-curto", shortBreakTime);
 
     shortBreakButton.classList.add("active");
     return;
   });
 
-  longBreakButton.addEventListener("click", (): void => {
+  longBreakButton.addEventListener<"click">("click", (): void => {
     changeContext("descanso-longo", longBreakTime);
 
     longBreakButton.classList.add("active");
     return;
   });
 
-  focusMusicToggle.addEventListener("change", (): void => {
+  focusMusicToggle.addEventListener<"change">("change", (): void => {
     if (music.paused) {
       music.play();
       return;
@@ -278,7 +281,7 @@ function addEventListeners(): void {
     }
   });
 
-  startPauseButton.addEventListener("click", (): void => {
+  startPauseButton.addEventListener<"click">("click", (): void => {
     if (timerID) {
       pause();
       return;
