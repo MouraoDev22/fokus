@@ -263,6 +263,7 @@ function crudAddEventListeners(): void {
       if (taskIndex > -1) {
         state.tasks[taskIndex].completed = true;
       }
+      
       saveTasks();
 
       state = { ...state, selectedTask: null };
